@@ -3,7 +3,7 @@
 A web-based car rental booking platform built for a single local car dealership that owns and rents out its own fleet. 
 Customers can browse available vehicles, select a rental date range, and book online; dealership staff manage the fleet, bookings, and vehicle availability through an admin interface.
 
-Course project for **CIS 453 — Software Spec. and Design **.
+Course project for ** CIS 453 — Software Spec. and Design **.
 
 ## Team — JJKC
 
