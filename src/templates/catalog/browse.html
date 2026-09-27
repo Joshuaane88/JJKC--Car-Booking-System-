@@ -1,0 +1,51 @@
+{% extends 'base.html' %}
+{% block title %}Browse Fleet{% endblock %}
+
+{% block content %}
+  <h1>Our Fleet</h1>
+
+  <form method="get" class="filters">
+    <label>
+      Category
+      <select name="category" onchange="this.form.submit()">
+        <option value="">All categories</option>
+        {% for cat in categories %}
+          <option value="{{ cat }}" {% if cat == selected_category %}selected{% endif %}>
+            {{ cat|capitalize }}
+          </option>
+        {% endfor %}
+      </select>
+    </label>
+    <noscript><button type="submit">Filter</button></noscript>
+  </form>
+
+  {% if vehicles %}
+    <div class="vehicle-grid">
+      {% for v in vehicles %}
+        <article class="vehicle-card">
+          {% if v['photo_url'] %}
+            <img src="{{ v['photo_url'] }}" alt="{{ v['year'] }} {{ v['make'] }} {{ v['model'] }}">
+          {% else %}
+            <div class="no-photo">No photo</div>
+          {% endif %}
+
+          <h2>{{ v['year'] }} {{ v['make'] }} {{ v['model'] }}</h2>
+          <p class="category">{{ v['category']|capitalize }}</p>
+          <p class="rate">${{ '%.2f'|format(v['daily_rate']) }} / day</p>
+
+          <a class="button" href="{{ url_for('catalog.detail', vehicle_id=v['id']) }}">
+            View details
+          </a>
+        </article>
+      {% endfor %}
+    </div>
+  {% else %}
+    <p class="empty">
+      No vehicles found{% if selected_category %} in the {{ selected_category }} category{% endif %}.
+    </p>
+  {% endif %}
+
+  <p class="alt-link">
+    Know your dates? <a href="{{ url_for('booking.search') }}">Check availability</a> instead.
+  </p>
+{% endblock %}
