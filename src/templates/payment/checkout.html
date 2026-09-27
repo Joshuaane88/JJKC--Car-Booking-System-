@@ -1,0 +1,37 @@
+{% extends 'base.html' %}
+{% block title %}Payment{% endblock %}
+
+{% block content %}
+  <section class="form-page">
+    <h1>Complete your booking</h1>
+
+    <div class="summary">
+      <h2>{{ booking['year'] }} {{ booking['make'] }} {{ booking['model'] }}</h2>
+      <table class="spec-table">
+        <tr><th>Pickup</th><td>{{ booking['start_date'] }}</td></tr>
+        <tr><th>Return</th><td>{{ booking['end_date'] }}</td></tr>
+        <tr><th>Daily rate</th><td>${{ '%.2f'|format(booking['daily_rate']) }}</td></tr>
+        <tr class="total-row">
+          <th>Total due</th>
+          <td><strong>${{ '%.2f'|format(booking['total_cost']) }}</strong></td>
+        </tr>
+      </table>
+    </div>
+
+    <div class="notice sim-notice">
+      <strong>Simulated payment.</strong> This is a course prototype. No card
+      details are collected, transmitted, or stored. Submitting below records a
+      simulated transaction and confirms your booking.
+    </div>
+
+    <form action="{{ url_for('payment.pay', booking_id=booking['id']) }}" method="post">
+      <button type="submit" class="primary">
+        Pay ${{ '%.2f'|format(booking['total_cost']) }} (simulated)
+      </button>
+    </form>
+
+    <p class="alt-link">
+      <a href="{{ url_for('booking.history') }}">Cancel and return to my bookings</a>
+    </p>
+  </section>
+{% endblock %}
