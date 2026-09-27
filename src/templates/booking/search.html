@@ -1,0 +1,86 @@
+{% extends 'base.html' %}
+{% block title %}Check Availability{% endblock %}
+
+{% block content %}
+  <h1>Check availability</h1>
+
+  <form method="get" class="search-form">
+    <label>
+      Pickup date
+      <input type="date" name="start" value="{{ start }}" required>
+    </label>
+
+    <label>
+      Return date
+      <input type="date" name="end" value="{{ end }}" required>
+    </label>
+
+    <label>
+      Category
+      <select name="category">
+        <option value="">All categories</option>
+        {% for cat in ['economy', 'sedan', 'suv', 'truck'] %}
+          <option value="{{ cat }}" {% if cat == selected_category %}selected{% endif %}>
+            {{ cat|capitalize }}
+          </option>
+        {% endfor %}
+      </select>
+    </label>
+
+    <button type="submit">Search</button>
+  </form>
+
+  {% if vehicles is not none %}
+    <h2>
+      Available {{ start }} to {{ end }}
+      {% if days %}<span class="days">({{ days }} day{{ 's' if days != 1 }})</span>{% endif %}
+    </h2>
+
+    {% if vehicles %}
+      <div class="vehicle-grid">
+        {% for v in vehicles %}
+          <article class="vehicle-card">
+            {% if v['photo_url'] %}
+              <img src="{{ v['photo_url'] }}" alt="{{ v['year'] }} {{ v['make'] }} {{ v['model'] }}">
+            {% else %}
+              <div class="no-photo">No photo</div>
+            {% endif %}
+
+            <h3>{{ v['year'] }} {{ v['make'] }} {{ v['model'] }}</h3>
+            <p class="category">{{ v['category']|capitalize }}</p>
+            <p class="rate">${{ '%.2f'|format(v['daily_rate']) }} / day</p>
+
+            {% if days %}
+              <p class="total">
+                Total: <strong>${{ '%.2f'|format(v['daily_rate'] * days) }}</strong>
+                for {{ days }} day{{ 's' if days != 1 }}
+              </p>
+            {% endif %}
+
+            {% if g.user %}
+              <form action="{{ url_for('booking.create') }}" method="post">
+                <input type="hidden" name="vehicle_id" value="{{ v['id'] }}">
+                <input type="hidden" name="start" value="{{ start }}">
+                <input type="hidden" name="end" value="{{ end }}">
+                <button type="submit">Book this vehicle</button>
+              </form>
+            {% else %}
+              <p class="notice">
+                <a href="{{ url_for('auth.login') }}">Log in</a> to book.
+              </p>
+            {% endif %}
+
+            <a class="alt-link" href="{{ url_for('catalog.detail', vehicle_id=v['id']) }}">
+              View details
+            </a>
+          </article>
+        {% endfor %}
+      </div>
+    {% else %}
+      <p class="empty">
+        No vehicles are available for those dates{% if selected_category %}
+        in the {{ selected_category }} category{% endif %}. Try a different range.
+      </p>
+    {% endif %}
+  {% endif %}
+{% endblock %}
