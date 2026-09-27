@@ -1,0 +1,31 @@
+{% extends 'base.html' %}
+{% block title %}Booking Confirmed{% endblock %}
+
+{% block content %}
+  <section class="form-page confirmation">
+    <h1>Booking confirmed</h1>
+
+    <div class="reference-box">
+      <p class="label">Your booking reference</p>
+      <p class="reference">{{ booking['reference'] }}</p>
+    </div>
+
+    <table class="spec-table">
+      <tr><th>Vehicle</th>
+          <td>{{ booking['year'] }} {{ booking['make'] }} {{ booking['model'] }}</td></tr>
+      <tr><th>Pickup</th><td>{{ booking['start_date'] }}</td></tr>
+      <tr><th>Return</th><td>{{ booking['end_date'] }}</td></tr>
+      <tr><th>Amount paid</th>
+          <td>${{ '%.2f'|format(payment['amount']) }}</td></tr>
+      <tr><th>Transaction</th><td>{{ payment['paycode'] }}</td></tr>
+    </table>
+
+    <p class="notice">
+      A confirmation email containing your reference has been sent.
+    </p>
+
+    <p class="alt-link">
+      <a href="{{ url_for('booking.history') }}">View all my bookings</a>
+    </p>
+  </section>
+{% endblock %}
