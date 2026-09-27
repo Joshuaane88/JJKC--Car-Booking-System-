@@ -1,0 +1,52 @@
+{% extends 'base.html' %}
+{% block title %}My Bookings{% endblock %}
+
+{% block content %}
+  <h1>My bookings</h1>
+
+  {% if bookings %}
+    <table class="bookings-table">
+      <thead>
+        <tr>
+          <th>Reference</th>
+          <th>Vehicle</th>
+          <th>Dates</th>
+          <th>Total</th>
+          <th>Status</th>
+          <th></th>
+        </tr>
+      </thead>
+      <tbody>
+        {% for b in bookings %}
+          <tr class="status-{{ b['status'] }}">
+            <td>{{ b['reference'] or '&mdash;'|safe }}</td>
+            <td>{{ b['year'] }} {{ b['make'] }} {{ b['model'] }}</td>
+            <td>{{ b['start_date'] }} &rarr; {{ b['end_date'] }}</td>
+            <td>
+              {% if b['total_cost'] is not none %}
+                ${{ '%.2f'|format(b['total_cost']) }}
+              {% else %}&mdash;{% endif %}
+            </td>
+            <td>{{ b['status']|capitalize }}</td>
+            <td>
+              {% if b['status'] == 'confirmed' and b['start_date'] > today %}
+                <form action="{{ url_for('booking.cancel', booking_id=b['id']) }}"
+                      method="post"
+                      onsubmit="return confirm('Cancel this booking?');">
+                  <button type="submit" class="danger">Cancel</button>
+                </form>
+              {% elif b['status'] == 'confirmed' %}
+                <span class="muted">In progress</span>
+              {% endif %}
+            </td>
+          </tr>
+        {% endfor %}
+      </tbody>
+    </table>
+  {% else %}
+    <p class="empty">
+      You have no bookings yet.
+      <a href="{{ url_for('booking.search') }}">Check availability</a> to make one.
+    </p>
+  {% endif %}
+{% endblock %}
