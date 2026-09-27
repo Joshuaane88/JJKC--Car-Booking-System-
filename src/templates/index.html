@@ -1,0 +1,25 @@
+{% extends 'base.html' %}
+{% block title %}Car Rental &mdash; Home{% endblock %}
+
+{% block content %}
+  <section class="hero">
+    <h1>Rent a car from our fleet</h1>
+    <p>Check availability for your dates and book online &mdash; no trip to the lot required.</p>
+
+    <form action="{{ url_for('booking.search') }}" method="get" class="quick-search">
+      <label>
+        Pickup date
+        <input type="date" name="start" required>
+      </label>
+      <label>
+        Return date
+        <input type="date" name="end" required>
+      </label>
+      <button type="submit">Find available vehicles</button>
+    </form>
+
+    <p class="alt-link">
+      Or <a href="{{ url_for('catalog.browse') }}">browse the whole fleet</a> first.
+    </p>
+  </section>
+{% endblock %}
