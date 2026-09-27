@@ -1,0 +1,51 @@
+{% extends 'base.html' %}
+{% block title %}{{ vehicle['year'] }} {{ vehicle['make'] }} {{ vehicle['model'] }}{% endblock %}
+
+{% block content %}
+  <article class="vehicle-detail">
+    {% if vehicle['photo_url'] %}
+      <img src="{{ vehicle['photo_url'] }}"
+           alt="{{ vehicle['year'] }} {{ vehicle['make'] }} {{ vehicle['model'] }}">
+    {% else %}
+      <div class="no-photo large">No photo available</div>
+    {% endif %}
+
+    <div class="vehicle-info">
+      <h1>{{ vehicle['year'] }} {{ vehicle['make'] }} {{ vehicle['model'] }}</h1>
+
+      <table class="spec-table">
+        <tr><th>Make</th><td>{{ vehicle['make'] }}</td></tr>
+        <tr><th>Model</th><td>{{ vehicle['model'] }}</td></tr>
+        <tr><th>Year</th><td>{{ vehicle['year'] }}</td></tr>
+        <tr><th>Category</th><td>{{ vehicle['category']|capitalize }}</td></tr>
+        <tr><th>Daily rate</th><td>${{ '%.2f'|format(vehicle['daily_rate']) }}</td></tr>
+        <tr>
+          <th>Current status</th>
+          <td>{{ vehicle['status']|replace('_', ' ')|capitalize }}</td>
+        </tr>
+      </table>
+
+      {% if vehicle['status'] == 'out_of_service' %}
+        <p class="notice">This vehicle is currently out of service and cannot be booked.</p>
+      {% else %}
+        <form action="{{ url_for('booking.search') }}" method="get" class="date-picker">
+          <h2>Check availability</h2>
+          <label>
+            Pickup date
+            <input type="date" name="start" required>
+          </label>
+          <label>
+            Return date
+            <input type="date" name="end" required>
+          </label>
+          <input type="hidden" name="category" value="{{ vehicle['category'] }}">
+          <button type="submit">Check these dates</button>
+        </form>
+      {% endif %}
+
+      <p class="alt-link">
+        <a href="{{ url_for('catalog.browse') }}">&larr; Back to the fleet</a>
+      </p>
+    </div>
+  </article>
+{% endblock %}
