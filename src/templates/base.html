@@ -1,0 +1,47 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>{% block title %}Car Rental{% endblock %}</title>
+  <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+</head>
+<body>
+
+  <header class="site-header">
+    <a class="brand" href="{{ url_for('index') }}">Car Rental</a>
+
+    <nav>
+      <a href="{{ url_for('catalog.browse') }}">Browse Fleet</a>
+      <a href="{{ url_for('booking.search') }}">Check Availability</a>
+
+      {% if g.user %}
+        {% if g.user['role'] == 'admin' %}
+          <a href="{{ url_for('admin.dashboard') }}">Admin</a>
+          <a href="{{ url_for('admin.bookings') }}">All Bookings</a>
+        {% else %}
+          <a href="{{ url_for('booking.history') }}">My Bookings</a>
+        {% endif %}
+        <span class="user">{{ g.user['name'] }}</span>
+        <a href="{{ url_for('auth.logout') }}">Log Out</a>
+      {% else %}
+        <a href="{{ url_for('auth.login') }}">Log In</a>
+        <a href="{{ url_for('auth.register') }}">Register</a>
+      {% endif %}
+    </nav>
+  </header>
+
+  <main>
+    {% for message in get_flashed_messages() %}
+      <div class="flash">{{ message }}</div>
+    {% endfor %}
+
+    {% block content %}{% endblock %}
+  </main>
+
+  <footer>
+    <p>CIS 453 &mdash; Car Rental Booking System &mdash; Team JJKC</p>
+  </footer>
+
+</body>
+</html>
