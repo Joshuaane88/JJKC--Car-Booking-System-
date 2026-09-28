@@ -35,9 +35,7 @@ def get_vehicle(vehicle_id):
     Returns a single vehicle row, or None if it doesn't exist.
     """
     db = get_db()
-    return db.execute(
-        "SELECT * FROM vehicles WHERE id = ?", (vehicle_id,)
-    ).fetchone()
+    return db.execute("SELECT * FROM vehicles WHERE id = ?", (vehicle_id,)).fetchone()
 
 
 @bp.route("/")
@@ -64,4 +62,7 @@ def detail(vehicle_id):
     """FR-4 — vehicle detail page."""
     vehicle = get_vehicle(vehicle_id)
 
-    if vehicle is
+    if vehicle is None:
+        abort(404)
+
+    return render_template("catalog/detail.html", vehicle=vehicle)
