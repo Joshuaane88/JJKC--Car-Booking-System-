@@ -1,0 +1,35 @@
+{% extends 'base.html' %}
+{% block title %}Booking Conflicts{% endblock %}
+
+{% block content %}
+  <h1>Cannot take this vehicle out of service yet</h1>
+
+  <div class="notice sim-notice">
+    Confirmed bookings still stand against this vehicle. The system does not
+    silently cancel customer bookings — cancel each one below (notifying the
+    customer) before the status change can be committed.
+  </div>
+
+  <table class="bookings-table">
+    <thead>
+      <tr><th>Ref</th><th>Dates</th><th>Total</th><th>Action</th></tr>
+    </thead>
+    <tbody>
+      {% for b in conflicts %}
+        <tr>
+          <td>{{ b['reference'] or '—' }}</td>
+          <td>{{ b['start_date'] }} &rarr; {{ b['end_date'] }}</td>
+          <td>{% if b['total_cost'] %}${{ '%.2f'|format(b['total_cost']) }}{% else %}—{% endif %}</td>
+          <td>
+            <form action="{{ url_for('admin.admin_cancel', booking_id=b['id']) }}" method="post"
+                  onsubmit="return confirm('Cancel this customer booking?');">
+              <button type="submit" class="danger">Cancel booking</button>
+            </form>
+          </td>
+        </tr>
+      {% endfor %}
+    </tbody>
+  </table>
+
+  <p class="alt-link"><a href="{{ url_for('admin.dashboard') }}">&larr; Back to dashboard</a></p>
+{% endblock %}
