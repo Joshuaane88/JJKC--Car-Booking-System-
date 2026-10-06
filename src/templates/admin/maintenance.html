@@ -1,0 +1,26 @@
+{% extends 'base.html' %}
+{% block title %}Block Maintenance{% endblock %}
+
+{% block content %}
+  <section class="form-page">
+    <h1>Maintenance window</h1>
+    <p>{{ vehicle['year'] }} {{ vehicle['make'] }} {{ vehicle['model'] }}</p>
+
+    <div class="notice">
+      A maintenance window is stored as a booking of type <strong>maintenance</strong>,
+      so the same overlap rule (FR-16) blocks customer bookings during it.
+    </div>
+
+    <form method="post">
+      <label>Start date
+        <input type="date" name="start" required>
+      </label>
+      <label>End date
+        <input type="date" name="end" required>
+      </label>
+      <button type="submit">Block these dates</button>
+    </form>
+
+    <p class="alt-link"><a href="{{ url_for('admin.dashboard') }}">&larr; Back to dashboard</a></p>
+  </section>
+{% endblock %}
