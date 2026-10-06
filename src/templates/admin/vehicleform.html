@@ -1,0 +1,42 @@
+{% extends 'base.html' %}
+{% block title %}{% if vehicle %}Edit Vehicle{% else %}Add Vehicle{% endif %}{% endblock %}
+
+{% block content %}
+  <section class="form-page">
+    <h1>{% if vehicle %}Edit vehicle{% else %}Add a vehicle{% endif %}</h1>
+
+    <form method="post">
+      <label>Make
+        <input name="make" required value="{{ vehicle['make'] if vehicle else '' }}">
+      </label>
+      <label>Model
+        <input name="model" required value="{{ vehicle['model'] if vehicle else '' }}">
+      </label>
+      <label>Year
+        <input type="number" name="year" required min="1980" max="2030"
+               value="{{ vehicle['year'] if vehicle else '' }}">
+      </label>
+      <label>Category
+        <select name="category" required>
+          {% for cat in categories %}
+            <option value="{{ cat }}"
+              {% if vehicle and vehicle['category']==cat %}selected{% endif %}>
+              {{ cat|capitalize }}
+            </option>
+          {% endfor %}
+        </select>
+      </label>
+      <label>Daily rate (USD)
+        <input type="number" name="daily_rate" step="0.01" min="0.01" required
+               value="{{ vehicle['daily_rate'] if vehicle else '' }}">
+      </label>
+      <label>Photo path (optional)
+        <input name="photo_url" value="{{ vehicle['photo_url'] or '' if vehicle else '' }}">
+      </label>
+
+      <button type="submit">{% if vehicle %}Save changes{% else %}Add vehicle{% endif %}</button>
+    </form>
+
+    <p class="alt-link"><a href="{{ url_for('admin.dashboard') }}">&larr; Back to dashboard</a></p>
+  </section>
+{% endblock %}
