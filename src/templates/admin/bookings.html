@@ -1,0 +1,63 @@
+{% extends 'base.html' %}
+{% block title %}All Bookings{% endblock %}
+
+{% block content %}
+  <h1>All bookings</h1>
+
+  <form method="get" class="filters">
+    <label>Status
+      <select name="status">
+        <option value="">Any</option>
+        {% for s in ['confirmed','cancelled','completed'] %}
+          <option value="{{ s }}" {% if status==s %}selected{% endif %}>{{ s|capitalize }}</option>
+        {% endfor %}
+      </select>
+    </label>
+    <label>From
+      <input type="date" name="from" value="{{ from_date or '' }}">
+    </label>
+    <label>To
+      <input type="date" name="to" value="{{ to_date or '' }}">
+    </label>
+    <button type="submit">Filter</button>
+  </form>
+
+  {% if bookings %}
+    <table class="bookings-table">
+      <thead>
+        <tr>
+          <th>Ref</th><th>Type</th><th>Vehicle</th><th>Customer</th>
+          <th>Dates</th><th>Total</th><th>Status</th><th>Actions</th>
+        </tr>
+      </thead>
+      <tbody>
+        {% for b in bookings %}
+          <tr class="status-{{ b['status'] }}">
+            <td>{{ b['reference'] or '—' }}</td>
+            <td>{{ b['type']|capitalize }}</td>
+            <td>{{ b['year'] }} {{ b['make'] }} {{ b['model'] }}</td>
+            <td>{{ b['customer_name'] or '—' }}</td>
+            <td>{{ b['start_date'] }} &rarr; {{ b['end_date'] }}</td>
+            <td>{% if b['total_cost'] %}${{ '%.2f'|format(b['total_cost']) }}{% else %}—{% endif %}</td>
+            <td>{{ b['status']|capitalize }}</td>
+            <td>
+              {% if b['status']=='confirmed' %}
+                <form action="{{ url_for('admin.mark_return', booking_id=b['id']) }}" method="post" style="display:inline">
+                  <button type="submit">Mark returned</button>
+                </form>
+                <form action="{{ url_for('admin.admin_cancel', booking_id=b['id']) }}" method="post"
+                      style="display:inline" onsubmit="return confirm('Cancel this booking?');">
+                  <button type="submit" class="danger">Cancel</button>
+                </form>
+              {% endif %}
+            </td>
+          </tr>
+        {% endfor %}
+      </tbody>
+    </table>
+  {% else %}
+    <p class="empty">No bookings match those filters.</p>
+  {% endif %}
+
+  <p class="alt-link"><a href="{{ url_for('admin.dashboard') }}">&larr; Back to dashboard</a></p>
+{% endblock %}
