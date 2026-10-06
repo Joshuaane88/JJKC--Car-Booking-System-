@@ -1,0 +1,67 @@
+{% extends 'base.html' %}
+{% block title %}Admin Dashboard{% endblock %}
+
+{% block content %}
+  <h1>Fleet &amp; Bookings</h1>
+
+  <p><a class="button" href="{{ url_for('admin.new_vehicle') }}">Add a vehicle</a></p>
+
+  <h2>Fleet ({{ vehicles|length }})</h2>
+  <table class="bookings-table">
+    <thead>
+      <tr>
+        <th>Vehicle</th><th>Category</th><th>Rate</th><th>Status</th><th>Actions</th>
+      </tr>
+    </thead>
+    <tbody>
+      {% for v in vehicles %}
+        <tr>
+          <td>{{ v['year'] }} {{ v['make'] }} {{ v['model'] }}</td>
+          <td>{{ v['category']|capitalize }}</td>
+          <td>${{ '%.2f'|format(v['daily_rate']) }}</td>
+          <td>{{ v['status']|replace('_',' ')|capitalize }}</td>
+          <td>
+            <form action="{{ url_for('admin.change_status', vehicle_id=v['id']) }}" method="post" style="display:inline">
+              <select name="status">
+                <option value="available"      {% if v['status']=='available' %}selected{% endif %}>Available</option>
+                <option value="rented"         {% if v['status']=='rented' %}selected{% endif %}>Rented</option>
+                <option value="out_of_service" {% if v['status']=='out_of_service' %}selected{% endif %}>Out of service</option>
+              </select>
+              <button type="submit">Set</button>
+            </form>
+            <a class="alt-link" href="{{ url_for('admin.edit_vehicle', vehicle_id=v['id']) }}">Edit</a>
+            <a class="alt-link" href="{{ url_for('admin.maintenance', vehicle_id=v['id']) }}">Maintenance</a>
+            <form action="{{ url_for('admin.delete_vehicle', vehicle_id=v['id']) }}" method="post"
+                  style="display:inline" onsubmit="return confirm('Remove this vehicle?');">
+              <button type="submit" class="danger">Remove</button>
+            </form>
+          </td>
+        </tr>
+      {% endfor %}
+    </tbody>
+  </table>
+
+  <h2>Upcoming bookings ({{ upcoming|length }})</h2>
+  {% if upcoming %}
+    <table class="bookings-table">
+      <thead>
+        <tr><th>Ref</th><th>Vehicle</th><th>Customer</th><th>Dates</th><th>Total</th></tr>
+      </thead>
+      <tbody>
+        {% for b in upcoming %}
+          <tr>
+            <td>{{ b['reference'] }}</td>
+            <td>{{ b['year'] }} {{ b['make'] }} {{ b['model'] }}</td>
+            <td>{{ b['customer_name'] or '—' }}</td>
+            <td>{{ b['start_date'] }} &rarr; {{ b['end_date'] }}</td>
+            <td>{% if b['total_cost'] %}${{ '%.2f'|format(b['total_cost']) }}{% else %}—{% endif %}</td>
+          </tr>
+        {% endfor %}
+      </tbody>
+    </table>
+  {% else %}
+    <p class="empty">No upcoming bookings.</p>
+  {% endif %}
+
+  <p class="alt-link"><a href="{{ url_for('admin.bookings') }}">View all bookings &rarr;</a></p>
+{% endblock %}
