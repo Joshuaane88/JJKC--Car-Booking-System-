@@ -1,0 +1,42 @@
+{% macro spec_icons(category) %}
+{% set specs = {
+'economy': {'seats': 5, 'bags': 2, 'drive': 'Automatic'},
+'sedan': {'seats': 5, 'bags': 3, 'drive': 'Automatic'},
+'suv': {'seats': 5, 'bags': 4, 'drive': 'AWD'},
+'truck': {'seats': 5, 'bags': 2, 'drive': '4x4'}
+} %}
+{% set s = specs.get(category, specs['sedan']) %}
+<ul class="spec-icons">
+    <li>
+        <svg viewBox="0 0 24 24" aria-hidden="true">
+            <path d="M12 7a2.5 2.5 0 1 0 0-5 2.5 2.5 0 0 0 0 5Zm-7 15v-2a4 4 0 0 1 4-4h6a4 4 0 0 1 4 4v2" fill="none"
+                stroke="currentColor" stroke-width="1.8" stroke-linecap="round" />
+        </svg>
+        {{ s.seats }}
+    </li>
+    <li>
+        <svg viewBox="0 0 24 24" aria-hidden="true">
+            <rect x="3" y="7" width="18" height="13" rx="2" fill="none" stroke="currentColor" stroke-width="1.8" />
+            <path d="M9 7V5a2 2 0 0 1 2-2h2a2 2 0 0 1 2 2v2" fill="none" stroke="currentColor" stroke-width="1.8"
+                stroke-linecap="round" />
+        </svg>
+        {{ s.bags }}
+    </li>
+    <li>
+        <svg viewBox="0 0 24 24" aria-hidden="true">
+            <circle cx="12" cy="12" r="9" fill="none" stroke="currentColor" stroke-width="1.8" />
+            <path d="M12 7v10M8 10h8" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" />
+        </svg>
+        {{ s.drive }}
+    </li>
+    <li>
+        <svg viewBox="0 0 24 24" aria-hidden="true">
+            <path d="M5 17h14M6 17V9l2-4h8l2 4v8" fill="none" stroke="currentColor" stroke-width="1.8"
+                stroke-linecap="round" />
+            <circle cx="8" cy="17" r="1.6" fill="currentColor" />
+            <circle cx="16" cy="17" r="1.6" fill="currentColor" />
+        </svg>
+        {{ category|capitalize }}
+    </li>
+</ul>
+{% endmacro %}

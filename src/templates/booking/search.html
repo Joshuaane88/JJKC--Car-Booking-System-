@@ -1,86 +1,123 @@
 {% extends 'base.html' %}
+{% from '_macros.html' import spec_icons %}
 {% block title %}Check Availability{% endblock %}
 
 {% block content %}
-  <h1>Check availability</h1>
+<div class="results-layout">
 
-  <form method="get" class="search-form">
-    <label>
-      Pickup date
-      <input type="date" name="start" value="{{ start }}" required>
-    </label>
+  <aside class="filter-sidebar">
+    <h2>Your search</h2>
+    <form method="get">
+      <label>
+        Pickup date
+        <input type="date" name="start" value="{{ start }}" required>
+      </label>
+      <label>
+        Return date
+        <input type="date" name="end" value="{{ end }}" required>
+      </label>
 
-    <label>
-      Return date
-      <input type="date" name="end" value="{{ end }}" required>
-    </label>
-
-    <label>
-      Category
-      <select name="category">
-        <option value="">All categories</option>
+      <fieldset>
+        <legend>Vehicle type</legend>
+        <label class="radio">
+          <input type="radio" name="category" value="" {% if not selected_category %}checked{% endif %}>
+          <span>All categories</span>
+        </label>
         {% for cat in ['economy', 'sedan', 'suv', 'truck'] %}
-          <option value="{{ cat }}" {% if cat == selected_category %}selected{% endif %}>
-            {{ cat|capitalize }}
-          </option>
+        <label class="radio">
+          <input type="radio" name="category" value="{{ cat }}" {% if selected_category==cat %}checked{% endif %}>
+          <span>{{ cat|capitalize }}</span>
+        </label>
         {% endfor %}
-      </select>
-    </label>
+      </fieldset>
 
-    <button type="submit">Search</button>
-  </form>
+      <button type="submit">Update search</button>
+    </form>
 
-  {% if vehicles is not none %}
-    <h2>
-      Available {{ start }} to {{ end }}
-      {% if days %}<span class="days">({{ days }} day{{ 's' if days != 1 }})</span>{% endif %}
-    </h2>
+    <div class="sidebar-note">
+      <strong>Availability is live.</strong>
+      Only vehicles with no confirmed booking or maintenance window across your
+      whole date range are shown.
+    </div>
+  </aside>
+
+  <main class="results-main">
+    {% if vehicles is not none %}
+    <div class="results-header">
+      <h1>
+        {{ vehicles|length }} vehicle{{ 's' if vehicles|length != 1 }} available
+      </h1>
+      <p class="results-meta">
+        {{ start }} to {{ end }}{% if days %} &middot; {{ days }} day{{ 's' if days != 1 }}{% endif %}
+        {%- if selected_category %} &middot; {{ selected_category|capitalize }}{% endif %}
+      </p>
+    </div>
 
     {% if vehicles %}
-      <div class="vehicle-grid">
-        {% for v in vehicles %}
-          <article class="vehicle-card">
-            {% if v['photo_url'] %}
-              <img src="{{ v['photo_url'] }}" alt="{{ v['year'] }} {{ v['make'] }} {{ v['model'] }}">
-            {% else %}
-              <div class="no-photo">No photo</div>
-            {% endif %}
+    <ul class="result-list">
+      {% for v in vehicles %}
+      <li class="result-card">
+        <div class="result-media">
+          {% if v['photo_url'] %}
+          <img src="{{ url_for('static', filename=v['photo_url']) }}"
+            alt="{{ v['year'] }} {{ v['make'] }} {{ v['model'] }}">
+          {% else %}
+          <div class="no-photo">No photo</div>
+          {% endif %}
+        </div>
 
-            <h3>{{ v['year'] }} {{ v['make'] }} {{ v['model'] }}</h3>
-            <p class="category">{{ v['category']|capitalize }}</p>
-            <p class="rate">${{ '%.2f'|format(v['daily_rate']) }} / day</p>
+        <div class="result-detail">
+          <h3>{{ v['year'] }} {{ v['make'] }} {{ v['model'] }}</h3>
+          <p class="result-sub">or similar {{ v['category']|capitalize }}</p>
 
-            {% if days %}
-              <p class="total">
-                Total: <strong>${{ '%.2f'|format(v['daily_rate'] * days) }}</strong>
-                for {{ days }} day{{ 's' if days != 1 }}
-              </p>
-            {% endif %}
+          {{ spec_icons(v['category']) }}
 
-            {% if g.user %}
-              <form action="{{ url_for('booking.create') }}" method="post">
-                <input type="hidden" name="vehicle_id" value="{{ v['id'] }}">
-                <input type="hidden" name="start" value="{{ start }}">
-                <input type="hidden" name="end" value="{{ end }}">
-                <button type="submit">Book this vehicle</button>
-              </form>
-            {% else %}
-              <p class="notice">
-                <a href="{{ url_for('auth.login') }}">Log in</a> to book.
-              </p>
-            {% endif %}
+          <ul class="result-perks">
+            <li>Free cancellation before pickup</li>
+            <li>Collected at the dealership</li>
+          </ul>
 
-            <a class="alt-link" href="{{ url_for('catalog.detail', vehicle_id=v['id']) }}">
-              View details
-            </a>
-          </article>
-        {% endfor %}
-      </div>
+          <a class="alt-link" href="{{ url_for('catalog.detail', vehicle_id=v['id']) }}">
+            More information
+          </a>
+        </div>
+
+        <div class="result-price">
+          <p class="rate-line">${{ '%.2f'|format(v['daily_rate']) }} <span>/ day</span></p>
+          {% if days %}
+          <p class="price-total">${{ '%.2f'|format(v['daily_rate'] * days) }}</p>
+          <p class="price-label">total for {{ days }} day{{ 's' if days != 1 }}</p>
+          {% endif %}
+
+          {% if g.user %}
+          <form action="{{ url_for('booking.create') }}" method="post">
+            <input type="hidden" name="vehicle_id" value="{{ v['id'] }}">
+            <input type="hidden" name="start" value="{{ start }}">
+            <input type="hidden" name="end" value="{{ end }}">
+            <button type="submit" class="book-btn">Book this vehicle</button>
+          </form>
+          {% else %}
+          <a class="button book-btn" href="{{ url_for('auth.login') }}">Log in to book</a>
+          {% endif %}
+        </div>
+      </li>
+      {% endfor %}
+    </ul>
     {% else %}
-      <p class="empty">
-        No vehicles are available for those dates{% if selected_category %}
-        in the {{ selected_category }} category{% endif %}. Try a different range.
-      </p>
+    <p class="empty">
+      No vehicles are available for those dates{% if selected_category %}
+      in the {{ selected_category }} category{% endif %}.
+      Try a different range or category.
+    </p>
     {% endif %}
-  {% endif %}
+
+    {% else %}
+    <div class="results-placeholder">
+      <h1>Check availability</h1>
+      <p>Enter your pickup and return dates to see which vehicles are free.</p>
+    </div>
+    {% endif %}
+  </main>
+
+</div>
 {% endblock %}

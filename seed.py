@@ -17,29 +17,25 @@ from src.db import get_db, init_db
 
 VEHICLES = [
     # (make, model, year, category, daily_rate, photo_url)
-    ("Toyota",    "Corolla",    2022, "economy", 38.00, None),
-    ("Honda",     "Civic",      2023, "economy", 42.00, None),
-    ("Nissan",    "Versa",      2021, "economy", 34.50, None),
-
-    ("Toyota",    "Camry",      2023, "sedan",   58.00, None),
-    ("Honda",     "Accord",     2022, "sedan",   55.00, None),
-    ("Mazda",     "Mazda6",     2023, "sedan",   61.00, None),
-
-    ("Toyota",    "RAV4",       2023, "suv",     72.00, None),
-    ("Honda",     "CR-V",       2022, "suv",     70.00, None),
-    ("Jeep",      "Grand Cherokee", 2023, "suv", 89.00, None),
-    ("Subaru",    "Outback",    2022, "suv",     75.00, None),
-
-    ("Ford",      "F-150",      2023, "truck",   95.00, None),
-    ("Chevrolet", "Silverado",  2022, "truck",   92.00, None),
-    ("Toyota",    "Tacoma",     2023, "truck",   84.00, None),
+    ("Toyota", "Corolla", 2022, "economy", 38.00, "img/corolla.webp"),
+    ("Honda", "Civic", 2023, "economy", 42.00, "img/Honda_civic.webp"),
+    ("Nissan", "Versa", 2021, "economy", 34.50, "img/versa.webp"),
+    ("Toyota", "Camry", 2023, "sedan", 58.00, "img/camry.webp"),
+    ("Honda", "Accord", 2022, "sedan", 55.00, "img/accord.webp"),
+    ("Mazda", "Mazda6", 2023, "sedan", 61.00, "img/mazda.webp"),
+    ("Toyota", "RAV4", 2023, "suv", 72.00, "img/rav4.jpg"),
+    ("Honda", "CR-V", 2022, "suv", 70.00, "img/crv.webp"),
+    ("Jeep", "Grand Cherokee", 2023, "suv", 89.00, "img/cherokee.jpg"),
+    ("Subaru", "Outback", 2022, "suv", 75.00, "img/subaru.png"),
+    ("Ford", "F-150", 2023, "truck", 95.00, "img/F-150.webp"),
+    ("Chevrolet", "Silverado", 2022, "truck", 92.00, "img/chevrolet.jpg"),
+    ("Toyota", "Tacoma", 2023, "truck", 84.00, "img/taycoma.jpg"),
 ]
-
 USERS = [
     # (name, email, phone, password, role)
-    ("Dealership Admin", "admin@carrental.test",  "315-555-0100", "admin123",    "admin"),
-    ("Jordan Reyes",     "jordan@example.test",   "315-555-0142", "customer123", "customer"),
-    ("Sam Okafor",       "sam@example.test",      "315-555-0188", "customer123", "customer"),
+    ("Dealership Admin", "admin@carrental.test", "315-555-0100", "admin123", "admin"),
+    ("Jordan Reyes", "jordan@example.test", "315-555-0142", "customer123", "customer"),
+    ("Sam Okafor", "sam@example.test", "315-555-0188", "customer123", "customer"),
 ]
 
 

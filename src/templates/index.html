@@ -2,24 +2,95 @@
 {% block title %}Car Rental &mdash; Home{% endblock %}
 
 {% block content %}
-  <section class="hero">
+<section class="hero-full">
+  <div class="hero-overlay">
+    <div class="hero-inner">
+      <p class="hero-eyebrow">JJKC</p>
+      <h1>Journey with us</h1>
+      <p class="hero-sub">Check availability for your dates and book online &mdash; no trip to the lot required.</p>
+    </div>
     <h1>Rent a car from our fleet</h1>
-    <p>Check availability for your dates and book online &mdash; no trip to the lot required.</p>
+    <p class="hero-sub">Check availability for your dates and book online &mdash; no trip to the lot required.</p>
+  </div>
+  </div>
 
-    <form action="{{ url_for('booking.search') }}" method="get" class="quick-search">
-      <label>
-        Pickup date
-        <input type="date" name="start" required>
-      </label>
-      <label>
-        Return date
-        <input type="date" name="end" required>
-      </label>
-      <button type="submit">Find available vehicles</button>
+  <div class="search-panel-wrap">
+    <form action="{{ url_for('booking.search') }}" method="get" class="search-panel">
+      <div class="panel-fields">
+        <label>
+          Pickup date
+          <input type="date" name="start" required>
+        </label>
+        <label>
+          Return date
+          <input type="date" name="end" required>
+        </label>
+        <label>
+          Category
+          <select name="category">
+            <option value="">All categories</option>
+            <option value="economy">Economy</option>
+            <option value="sedan">Sedan</option>
+            <option value="suv">SUV</option>
+            <option value="truck">Truck</option>
+          </select>
+        </label>
+        <button type="submit">Search availability</button>
+      </div>
+
+      <ul class="panel-features">
+        <li>Free cancellation before pickup</li>
+        <li>No hidden fees</li>
+        <li>Confirmed instantly</li>
+      </ul>
     </form>
+  </div>
+</section>
 
-    <p class="alt-link">
-      Or <a href="{{ url_for('catalog.browse') }}">browse the whole fleet</a> first.
-    </p>
-  </section>
+<section class="category-strip">
+  <h2>Browse by category</h2>
+  <div class="category-row">
+    <a class="category-tile economy" href="{{ url_for('catalog.browse', category='economy') }}">
+      <span class="cat-name">Economy</span>
+      <span class="cat-price">from $34/day</span>
+    </a>
+    <a class="category-tile sedan" href="{{ url_for('catalog.browse', category='sedan') }}">
+      <span class="cat-name">Sedan</span>
+      <span class="cat-price">from $55/day</span>
+    </a>
+    <a class="category-tile suv" href="{{ url_for('catalog.browse', category='suv') }}">
+      <span class="cat-name">SUV</span>
+      <span class="cat-price">from $70/day</span>
+    </a>
+    <a class="category-tile truck" href="{{ url_for('catalog.browse', category='truck') }}">
+      <span class="cat-name">Truck</span>
+      <span class="cat-price">from $84/day</span>
+    </a>
+  </div>
+</section>
+
+<section class="how-it-works">
+  <h2>How it works</h2>
+  <ol class="steps">
+    <li>
+      <span class="step-num">1</span>
+      <h3>Pick your dates</h3>
+      <p>Enter a pickup and return date and we'll show only the vehicles free for that whole range.</p>
+    </li>
+    <li>
+      <span class="step-num">2</span>
+      <h3>Choose a vehicle</h3>
+      <p>Compare makes, models and daily rates, with the total for your trip calculated up front.</p>
+    </li>
+    <li>
+      <span class="step-num">3</span>
+      <h3>Book and confirm</h3>
+      <p>Pay online and get a booking reference on screen and by email. Pick the keys up and go.</p>
+    </li>
+  </ol>
+</section>
+
+<p class="alt-link browse-all">
+  <a href="{{ url_for('catalog.browse') }}">Or browse the whole fleet &rarr;</a>
+</p>
 {% endblock %}
